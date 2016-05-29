@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+rsync -rvzah \
+	/home/tom/casa/dv/project/node-casa-dv/ \
+	root@casa-dv.made-by-tom.co.uk:/home/tom/node-casa-dv/ \
+	--exclude node_modules \
+	--exclude deploy \
+	--exclude .env \
+	--exclude .env.live \
+	--exclude .gitignore \
+	--exclude .git
+
+rsync -rvzah \
+	/home/tom/casa/dv/project/node-casa-dv/app/.env.live \
+	root@casa-dv.made-by-tom.co.uk:/home/tom/node-casa-dv/app/.env

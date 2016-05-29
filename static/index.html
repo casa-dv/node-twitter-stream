@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Twitter Stream</title>
+</head>
+<body>
+	<ul id="tweets"></ul>
+	<script>
+	var connection = new WebSocket('ws://localhost:5000');
+	var list = document.getElementById('tweets');
+
+	function create_li(tweet){
+		var li = document.createElement("li");
+		li.textContent = tweet.text;
+		li.setAttribute("id",tweet.id);
+		li.setAttribute("data-tweet-id",tweet.id);
+		li.setAttribute("data-tweet-location",tweet.geo);
+		li.setAttribute("data-tweet-user",tweet.name);
+		return li;
+	}
+
+	// When the connection is open, send some data to the server
+	connection.onopen = function () {
+		// connection.send('Ping'); // Send the message 'Ping' to the server
+	};
+
+	// Log errors
+	connection.onerror = function (error) {
+		console.log('WebSocket Error ' + error);
+	};
+
+	// Log messages from the server
+	connection.onmessage = function (e) {
+		var tweet = JSON.parse(e.data);
+		console.log(tweet);
+		list.appendChild(create_li(tweet));
+	};
+	</script>
+</body>
+</html>
