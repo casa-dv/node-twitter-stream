@@ -10,5 +10,5 @@ rsync -rvzah \
 	--exclude .git
 
 rsync -rvzah \
-	/home/tom/casa/dv/project/node-casa-dv/app/.env.live \
-	root@casa-dv.made-by-tom.co.uk:/home/tom/node-casa-dv/app/.env
+	/home/tom/casa/dv/project/node-casa-dv/.env.live \
+	root@casa-dv.made-by-tom.co.uk:/home/tom/node-casa-dv/.env

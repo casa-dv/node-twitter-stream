@@ -37,11 +37,11 @@ var stream = client.stream(
 	}
 );
 stream.on('data', function(data) {
-	console.log(data.geo);
-	if(data.geo){
+	console.log(data);
+	// if(data.geo){
 		var tweet = parse_tweet(data);
 		wss.broadcast(JSON.stringify(tweet));
-	}
+	// }
 });
 stream.on('error', function(error) {
 	throw error;
