@@ -3,19 +3,79 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Twitter Stream</title>
+	<link rel="stylesheet" href="/static/leaflet-1.0.0rc1.css" />
+	<style>
+
+	html {
+		height: 100%;
+	}
+	body {
+		margin:0;
+		padding:0;
+		display: flex;
+		align-items: stretch;
+		height: 100%;
+		overflow: hidden;
+	}
+	#controls {
+		order: 1;
+		flex: 1 auto;
+		background: rgba(255, 255, 255, 0.9);
+		padding: 1em;
+		max-width: 23em;
+		overflow-y: scroll;
+	}
+	#mapwrap {
+		position: relative;
+		order: 2;
+		flex: 1 100%;
+	}
+	#map {
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+	}
+	h1 {
+		margin: 0 0 1em;
+		font-size: 1.3em;
+	}
+	hr {
+		border: 0.5em solid black;
+		height: 0px;
+		width: 100%;
+		margin: 2em 0px;
+	}
+	</style>
 </head>
 <body>
-	<ul id="tweets"></ul>
+
+	<div id="controls">
+		<h1>Local Conversation</h1>
+		<hr>
+		<p>Tweets in Greater London:</p>
+		<ul id="tweets"></ul>
+	</div>
+	<div id="mapwrap">
+		<div id='map'></div>
+	</div>
+	<script src="/static/leaflet-1.0.0rc1.js"></script>
 	<script>
+	var map = L.map('map').setView([51.505, -0.09], 13);
+
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+
 	var connection = new WebSocket('ws://casa-dv.made-by-tom.co.uk/twitter_stream/');
 	var list = document.getElementById('tweets');
 
 	function create_li(tweet){
 		var li = document.createElement("li");
-		li.textContent = tweet.text;
 		li.setAttribute("id",tweet.id);
+		li.textContent = tweet.text;
 		li.setAttribute("data-tweet-id",tweet.id);
-		li.setAttribute("data-tweet-location",tweet.geo);
 		li.setAttribute("data-tweet-user",tweet.name);
 		return li;
 	}
@@ -30,11 +90,15 @@
 		console.log('WebSocket Error ' + error);
 	};
 
-	// Log messages from the server
 	connection.onmessage = function (e) {
 		var tweet = JSON.parse(e.data);
 		console.log(tweet);
-		list.appendChild(create_li(tweet));
+		list.insertBefore(create_li(tweet), document.querySelector('#tweets li:first-child'));
+		if(tweet.location){
+			var marker = L.marker(tweet.location.coordinates).bindPopup(tweet.text+'<a href="https://twitter.com/'+tweet.name+"/status/"+tweet.id+'" target="_blank">@'+tweet.name+"</a>");
+			marker.addTo(map);
+			map.panTo(tweet.location.coordinates);
+		}
 	};
 	</script>
 </body>
