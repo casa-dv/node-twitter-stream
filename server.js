@@ -11,7 +11,7 @@ var client = new Twitter({
   access_token_key: process.env.TWITTER_ACCESS_TOKEN,
   access_token_secret: process.env.TWITTER_ACCESS_SECRET,
 });
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 5060;
 
 // Express REST app
 var app = express();
