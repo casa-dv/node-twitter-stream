@@ -74,10 +74,13 @@
 	function create_li(tweet){
 		var li = document.createElement("li");
 		li.setAttribute("id",tweet.id);
-		li.textContent = tweet.text;
+		li.innerHTML = tweet_inner(tweet);
 		li.setAttribute("data-tweet-id",tweet.id);
 		li.setAttribute("data-tweet-user",tweet.name);
 		return li;
+	}
+	function tweet_inner(tweet){
+		return tweet.text+'<a href="https://twitter.com/'+tweet.name+"/status/"+tweet.id+'" target="_blank">@'+tweet.name+"</a>";
 	}
 
 	// When the connection is open, send some data to the server
@@ -95,7 +98,7 @@
 		console.log(tweet);
 		list.insertBefore(create_li(tweet), document.querySelector('#tweets li:first-child'));
 		if(tweet.location){
-			var marker = L.marker(tweet.location.coordinates).bindPopup(tweet.text+'<a href="https://twitter.com/'+tweet.name+"/status/"+tweet.id+'" target="_blank">@'+tweet.name+"</a>");
+			var marker = L.marker(tweet.location.coordinates).bindPopup(tweet_inner(tweet));
 			marker.addTo(map);
 			map.panTo(tweet.location.coordinates);
 		}
